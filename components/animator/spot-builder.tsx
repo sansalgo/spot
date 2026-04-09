@@ -1,16 +1,16 @@
 "use client";
 
-import React from "react";
-import { Copy, Trash2, PlusSquare, Layers } from "lucide-react";
-import { useAnimatorStore, selectActiveSeq, selectCurrentFrame } from "@/store/animator";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Toolbar } from "./toolbar";
-import { SequenceList } from "./sequence-list";
+import { selectActiveSeq, selectCurrentFrame, useAnimatorStore } from "@/store/animator";
+import { CopyIcon, PlusSquareIcon, StackIcon, TrashIcon } from "@phosphor-icons/react";
+import React, { useEffect } from "react";
 import { DrawGrid } from "./draw-grid";
-import { FrameStrip } from "./frame-strip";
-import { SpotPlayer } from "./spot-player";
 import { ExportModal } from "./export-modal";
+import { FrameStrip } from "./frame-strip";
+import { SequenceList } from "./sequence-list";
+import { SpotPlayer } from "./spot-player";
+import { Toolbar } from "./toolbar";
 
 export function SpotBuilder() {
   const isPlaying = useAnimatorStore((s) => s.isPlaying);
@@ -23,14 +23,74 @@ export function SpotBuilder() {
   const seq = useAnimatorStore(selectActiveSeq);
   const currentFrame = useAnimatorStore(selectCurrentFrame);
 
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      const { togglePlay, addFrame, duplicateFrame, clearFrame, deleteFrame, addSequence, sequences, activeSeqIndex } =
+        useAnimatorStore.getState();
+      switch (e.key) {
+        case " ":
+          e.preventDefault();
+          togglePlay();
+          break;
+        case "n":
+        case "N":
+          if (e.shiftKey) addSequence();
+          else addFrame();
+          break;
+        case "d":
+        case "D":
+          if (!e.shiftKey && !e.ctrlKey && !e.metaKey) duplicateFrame();
+          break;
+        case "c":
+        case "C":
+          if (!e.shiftKey && !e.ctrlKey && !e.metaKey) clearFrame();
+          break;
+        case "Delete":
+        case "Backspace": {
+          const active = sequences[activeSeqIndex];
+          if (active) deleteFrame(active.activeFrame);
+          break;
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
+
   if (!seq) return null;
 
   const frameActions = [
-    { label: "CLEAR", action: clearFrame, icon: <Trash2 size={12} />, tip: "Clear current frame" },
-    { label: "FILL",  action: fillFrame,  icon: <Layers size={12} />,   tip: "Fill all pixels" },
-    { label: "FRAME", action: addFrame,   icon: <PlusSquare size={12} />, tip: "Add new frame" },
-    { label: "DUPE",  action: duplicateFrame, icon: <Copy size={12} />, tip: "Duplicate frame" },
-  ] as Array<{ label: string; action: () => void; icon: React.ReactNode; tip: string }>;
+    {
+      label: "CLEAR",
+      action: clearFrame,
+      icon: <TrashIcon size={16} />,
+      tip: "Clear frame · C",
+    },
+    {
+      label: "FILL",
+      action: fillFrame,
+      icon: <StackIcon size={16} />,
+      tip: "Fill all pixels",
+    },
+    {
+      label: "FRAME",
+      action: addFrame,
+      icon: <PlusSquareIcon size={16} />,
+      tip: "Add frame · N",
+    },
+    {
+      label: "DUPE",
+      action: duplicateFrame,
+      icon: <CopyIcon size={16} />,
+      tip: "Duplicate frame · D",
+    },
+  ] as Array<{
+    label: string
+    action: () => void
+    icon: React.ReactNode
+    tip: string
+  }>
 
   return (
     <div className="h-screen flex flex-col font-mono bg-background text-foreground overflow-hidden">
@@ -60,7 +120,7 @@ export function SpotBuilder() {
                     variant="ghost"
                     size="sm"
                     onClick={btn.action}
-                    className="h-7 px-2.5 text-[10px] font-mono gap-1"
+                    className="h-8 px-2.5 text-[10px] font-mono gap-1.5"
                   >
                     {btn.icon}
                     {btn.label}
@@ -92,8 +152,6 @@ export function SpotBuilder() {
             <div className="border border-border p-2.5 w-20">
               <SpotPlayer
                 frames={seq.frames.length > 0 ? seq.frames : [[]]}
-                cols={7}
-                rows={7}
                 gap
                 isPlaying={isPlaying}
                 duration={duration}

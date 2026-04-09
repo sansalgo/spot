@@ -1,10 +1,11 @@
 "use client";
 
-import { Play, Square } from "lucide-react";
-import { useAnimatorStore } from "@/store/animator";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useAnimatorStore } from "@/store/animator";
+import { PlayIcon, StopIcon } from "@phosphor-icons/react";
 
 export function Toolbar() {
   const isPlaying = useAnimatorStore((s) => s.isPlaying);
@@ -32,7 +33,7 @@ export function Toolbar() {
         </span>
       </div>
 
-      <Separator orientation="vertical" className="h-5" />
+      <Separator orientation="vertical" />
 
       {/* Speed + Play */}
       <div className="flex items-center gap-3 shrink-0">
@@ -47,18 +48,25 @@ export function Toolbar() {
         />
         <span className="text-[10px] text-muted-foreground font-mono w-10">{duration}ms</span>
 
-        <Button
-          onClick={togglePlay}
-          size="sm"
-          variant="outline"
-          className="h-7 px-3 text-[11px] font-mono"
-        >
-          {isPlaying ? (
-            <><Square size={10} className="mr-1" /> STOP</>
-          ) : (
-            <><Play size={10} className="mr-1" /> PLAY</>
-          )}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={togglePlay}
+              size="sm"
+              variant="outline"
+              className="h-8 px-3 text-[11px] font-mono gap-1.5"
+            >
+              {isPlaying ? (
+                <><StopIcon size={16} /> STOP</>
+              ) : (
+                <><PlayIcon size={16} /> PLAY</>
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="text-[10px]">
+            {isPlaying ? "Stop · Space" : "Play · Space"}
+          </TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );

@@ -14,13 +14,13 @@ export function FrameStrip() {
   if (!seq) return null;
 
   return (
-    <div className="w-50 border-l border-border flex flex-col overflow-hidden">
-      <div className="px-3 pt-3 text-[9px] text-muted-foreground tracking-widest shrink-0">
+    <div className="w-64 border-l border-border flex flex-col overflow-hidden">
+      <div className="px-3 pt-3 text-[9px] text-muted-foreground truncate tracking-widest shrink-0">
         FRAMES — {sequences[activeSeqIndex]?.name}
       </div>
 
       <ScrollArea className="flex-1 p-3 min-h-0">
-        <div className="flex flex-wrap gap-1.5">
+        <div className="grid grid-cols-2 gap-1.5">
           {seq.frames.map((frame, fi) => (
             <FrameThumb
               key={fi}

@@ -3,30 +3,29 @@
 /**
  * SpotPlayer
  *
- * A self-contained, resizable player that renders and animates a sequence of
- * pixel frames. Scales like an SVG icon — set width/height via className and
+ * A self-contained, resizable 7×7 pixel animation player.
+ * Scales like an SVG icon — set a width/height via className and
  * the grid fills the container proportionally.
  *
- * Can be driven either by:
- *  a) Raw `frames` + grid props (used internally by the builder)
- *  b) A full `AnimationConfig` object from an export (use the `config` prop)
+ * Usage:
+ *   <SpotPlayer frames={[[0,1,2],[1,2,3]]} gap duration={120} />
  *
- * Usage with exported config:
- *   <SpotPlayer config={myAnimationConfig} />
- *
- * Usage with raw frames (builder-internal):
- *   <SpotPlayer frames={[[0,1,2],[1,2,3]]} cols={7} rows={7} gap isPlaying duration={120} />
+ * Props:
+ *   frames      — array of frames; each frame is an array of active pixel indices (0–48)
+ *   gap         — render a 1px gap between pixels (default true)
+ *   isPlaying   — animate automatically (default true)
+ *   duration    — ms per frame (default 120)
+ *   repeatCount — how many full loops before stopping; -1 = infinite (default -1)
+ *   onComplete  — called when repeatCount is reached
+ *   className   — forwarded to the root element for sizing (e.g. "w-16 h-16")
  */
 
 import { useRef, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import type { Frame, AnimationConfig } from "@/types/animator";
+import type { Frame } from "@/types/animator";
 
-interface RawProps {
-  config?: never;
+export interface SpotPlayerProps {
   frames: Frame[];
-  cols: number;
-  rows: number;
   gap?: boolean;
   isPlaying?: boolean;
   duration?: number;
@@ -35,43 +34,15 @@ interface RawProps {
   className?: string;
 }
 
-interface ConfigProps {
-  config: AnimationConfig;
-  frames?: never;
-  cols?: never;
-  rows?: never;
-  gap?: boolean;
-  isPlaying?: boolean;
-  duration?: number;
-  repeatCount?: number;
-  onComplete?: () => void;
-  className?: string;
-}
-
-type SpotPlayerProps = RawProps | ConfigProps;
-
-export function SpotPlayer(props: SpotPlayerProps) {
-  const resolved =
-    props.config != null
-      ? {
-          frames: props.config.sequences.flatMap((s) => s.frames),
-          gap: props.gap ?? props.config.grid.gap,
-          isPlaying: props.isPlaying ?? true,
-          duration: props.duration ?? props.config.duration,
-          repeatCount: props.repeatCount ?? -1,
-          onComplete: props.onComplete,
-        }
-      : {
-          frames: props.frames,
-          gap: props.gap ?? true,
-          isPlaying: props.isPlaying ?? false,
-          duration: props.duration ?? 120,
-          repeatCount: props.repeatCount ?? -1,
-          onComplete: props.onComplete,
-        };
-
-  const { frames, gap, isPlaying, duration, repeatCount, onComplete } = resolved;
-
+export function SpotPlayer({
+  frames,
+  gap = true,
+  isPlaying = true,
+  duration = 120,
+  repeatCount = -1,
+  onComplete,
+  className,
+}: SpotPlayerProps) {
   const total = 7 * 7;
   const gridRef = useRef<HTMLDivElement>(null);
   const currentIndex = useRef(0);
@@ -137,7 +108,7 @@ export function SpotPlayer(props: SpotPlayerProps) {
       className={cn(
         "grid grid-cols-7 w-full aspect-square",
         gap ? "gap-0.5" : "gap-0",
-        props.className
+        className
       )}
     >
       {Array.from({ length: total }).map((_, i) => (
