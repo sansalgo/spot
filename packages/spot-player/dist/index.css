@@ -1,0 +1,40 @@
+/**
+ * @sansalgo/spot-player
+ *
+ * Import this file once in your app:
+ *   import "@sansalgo/spot-player/style.css";
+ *
+ * Customize via CSS variables on any ancestor element (or :root):
+ *
+ *   .my-player {
+ *     --spot-on:     #111111;   /* lit pixel color
+ *     --spot-off:    #e4e4e4;   /* unlit pixel color
+ *     --spot-gap:    1px;       /* gap between pixels (when gap prop is true)
+ *     --spot-radius: 0px;       /* pixel border-radius
+ *   }
+ */
+
+.spot-player {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  gap: 0;
+  box-sizing: border-box;
+}
+
+.spot-player--gap {
+  gap: var(--spot-gap, 1px);
+}
+
+.spot-pixel {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--spot-off, #e4e4e4);
+  border-radius: var(--spot-radius, 0px);
+  transition: background-color 75ms linear;
+}
+
+.spot-pixel--on {
+  background-color: var(--spot-on, #111111);
+}
