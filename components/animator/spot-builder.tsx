@@ -149,9 +149,10 @@ export function SpotBuilder() {
           {/* Live preview */}
           <div className="flex flex-col items-center gap-2">
             <div className="text-[9px] text-muted-foreground tracking-widest">LIVE PREVIEW</div>
-            <div className="border border-border p-2.5 w-20">
+            <div className="border border-border p-2.5">
               <SpotPlayer
                 frames={seq.frames.length > 0 ? seq.frames : [[]]}
+                size={60}
                 gap
                 isPlaying={isPlaying}
                 duration={duration}

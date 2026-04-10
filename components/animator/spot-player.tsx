@@ -26,22 +26,23 @@ import type { Frame } from "@/types/animator";
 
 export interface SpotPlayerProps {
   frames: Frame[];
+  /** Width and height of the player in pixels. */
+  size: number;
   gap?: boolean;
   isPlaying?: boolean;
   duration?: number;
   repeatCount?: number;
   onComplete?: () => void;
-  className?: string;
 }
 
 export function SpotPlayer({
   frames,
+  size,
   gap = true,
   isPlaying = true,
   duration = 120,
   repeatCount = -1,
   onComplete,
-  className,
 }: SpotPlayerProps) {
   const total = 7 * 7;
   const gridRef = useRef<HTMLDivElement>(null);
@@ -105,11 +106,8 @@ export function SpotPlayer({
   return (
     <div
       ref={gridRef}
-      className={cn(
-        "grid grid-cols-7 w-full aspect-square",
-        gap ? "gap-0.5" : "gap-0",
-        className
-      )}
+      className={cn("grid grid-cols-7", gap ? "gap-0.5" : "gap-0")}
+      style={{ width: size, height: size }}
     >
       {Array.from({ length: total }).map((_, i) => (
         <div

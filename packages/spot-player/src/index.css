@@ -6,11 +6,10 @@
  *
  * Customize via CSS variables on any ancestor element (or :root):
  *
- *   .my-player {
- *     --spot-on:     #111111;   /* lit pixel color
- *     --spot-off:    #e4e4e4;   /* unlit pixel color
- *     --spot-gap:    1px;       /* gap between pixels (when gap prop is true)
- *     --spot-radius: 0px;       /* pixel border-radius
+ *   .player {
+ *     --spot-on:  #111111;   /* lit pixel color
+ *     --spot-off: #e4e4e4;   /* unlit pixel color
+ *     --spot-gap: 1px;       /* gap between pixels (when gap prop is true)
  *   }
  */
 
@@ -31,7 +30,7 @@
   width: 100%;
   aspect-ratio: 1 / 1;
   background-color: var(--spot-off, #e4e4e4);
-  border-radius: var(--spot-radius, 0px);
+
   transition: background-color 75ms linear;
 }
 

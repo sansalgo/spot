@@ -131,6 +131,7 @@ export function SequenceList() {
         </div>
         <SpotPlayer
           frames={allFrames.length > 0 ? allFrames : [[]]}
+          size={232}
           gap
           isPlaying={isPlaying}
           duration={duration}

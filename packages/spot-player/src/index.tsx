@@ -1,11 +1,48 @@
 import { useCallback, useEffect, useRef } from "react";
 
+const CSS = `
+.spot-player {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  aspect-ratio: 1 / 1;
+  gap: 0;
+  box-sizing: border-box;
+}
+.spot-player--gap {
+  gap: var(--spot-gap, 1px);
+}
+.spot-pixel {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--spot-off, #e4e4e4);
+  transition: background-color 75ms linear;
+}
+.spot-pixel--on {
+  background-color: var(--spot-on, #111111);
+}
+`;
+
+const STYLE_ID = "spot-player-styles";
+
+function injectStyle() {
+  if (typeof document === "undefined") return;
+  if (document.getElementById(STYLE_ID)) return;
+  const el = document.createElement("style");
+  el.id = STYLE_ID;
+  el.textContent = CSS;
+  document.head.appendChild(el);
+}
+
+injectStyle();
+
 /** An array of active pixel indices (0–48) representing one animation frame. */
 export type Frame = number[];
 
 export interface SpotPlayerProps {
   /** Animation frames — each frame is an array of active pixel indices (0–48). */
   frames: Frame[];
+  /** Width and height of the player in pixels. */
+  size: number;
   /** Render a gap between pixels. Default: true. */
   gap?: boolean;
   /** Play the animation automatically. Default: true. */
@@ -16,32 +53,18 @@ export interface SpotPlayerProps {
   repeatCount?: number;
   /** Called when repeatCount is reached. */
   onComplete?: () => void;
-  /**
-   * CSS class for sizing — e.g. set width/height here.
-   * The grid always fills its container and keeps a 1:1 aspect ratio.
-   *
-   * @example
-   * // Inline size
-   * <SpotPlayer frames={...} style={{ width: 64 }} />
-   *
-   * // Tailwind
-   * <SpotPlayer frames={...} className="w-16" />
-   */
-  className?: string;
-  style?: React.CSSProperties;
 }
 
 const TOTAL = 49; // 7 × 7
 
 export function SpotPlayer({
   frames,
+  size,
   gap = true,
   isPlaying = true,
   duration = 120,
   repeatCount = -1,
   onComplete,
-  className,
-  style,
 }: SpotPlayerProps) {
   const gridRef = useRef<HTMLDivElement>(null);
   const currentIndex = useRef(0);
@@ -100,16 +123,12 @@ export function SpotPlayer({
     };
   }, [frames, isPlaying, applyFrame, duration, repeatCount, onComplete]);
 
-  const rootClass = [
-    "spot-player",
-    gap ? "spot-player--gap" : "",
-    className ?? "",
-  ]
+  const rootClass = ["spot-player", gap ? "spot-player--gap" : ""]
     .filter(Boolean)
     .join(" ");
 
   return (
-    <div ref={gridRef} className={rootClass} style={style}>
+    <div ref={gridRef} className={rootClass} style={{ width: size, height: size }}>
       {Array.from({ length: TOTAL }).map((_, i) => (
         <div key={i} className="spot-pixel" />
       ))}

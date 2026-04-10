@@ -14,7 +14,7 @@ export function Toolbar() {
   const setDuration = useAnimatorStore((s) => s.setDuration);
 
   return (
-    <div className="px-4 py-2 border-b border-border flex items-center gap-4">
+    <div className="h-12 px-4 border-b border-border flex items-center gap-4">
       {/* Logo */}
       <div className="flex items-center gap-2.5 shrink-0">
         <div className="grid grid-cols-4 gap-0.5 w-5">
