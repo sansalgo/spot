@@ -20,6 +20,14 @@ const CSS = `
 .spot-pixel--on {
   background-color: var(--spot-on, #111111);
 }
+@media (prefers-color-scheme: dark) {
+  .spot-pixel { background-color: var(--spot-off, #2a2a2a); }
+  .spot-pixel--on { background-color: var(--spot-on, #f0f0f0); }
+}
+.dark .spot-pixel { background-color: var(--spot-off, #2a2a2a); }
+.dark .spot-pixel--on { background-color: var(--spot-on, #f0f0f0); }
+.light .spot-pixel { background-color: var(--spot-off, #e4e4e4); }
+.light .spot-pixel--on { background-color: var(--spot-on, #111111); }
 `;
 
 const STYLE_ID = "spot-player-styles";

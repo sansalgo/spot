@@ -25,16 +25,54 @@ __export(index_exports, {
 module.exports = __toCommonJS(index_exports);
 var import_react = require("react");
 var import_jsx_runtime = require("react/jsx-runtime");
+var CSS = `
+.spot-player {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  aspect-ratio: 1 / 1;
+  gap: 0;
+  box-sizing: border-box;
+}
+.spot-player--gap {
+  gap: var(--spot-gap, 1px);
+}
+.spot-pixel {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--spot-off, #e4e4e4);
+  transition: background-color 75ms linear;
+}
+.spot-pixel--on {
+  background-color: var(--spot-on, #111111);
+}
+@media (prefers-color-scheme: dark) {
+  .spot-pixel { background-color: var(--spot-off, #2a2a2a); }
+  .spot-pixel--on { background-color: var(--spot-on, #f0f0f0); }
+}
+.dark .spot-pixel { background-color: var(--spot-off, #2a2a2a); }
+.dark .spot-pixel--on { background-color: var(--spot-on, #f0f0f0); }
+.light .spot-pixel { background-color: var(--spot-off, #e4e4e4); }
+.light .spot-pixel--on { background-color: var(--spot-on, #111111); }
+`;
+var STYLE_ID = "spot-player-styles";
+function injectStyle() {
+  if (typeof document === "undefined") return;
+  if (document.getElementById(STYLE_ID)) return;
+  const el = document.createElement("style");
+  el.id = STYLE_ID;
+  el.textContent = CSS;
+  document.head.appendChild(el);
+}
+injectStyle();
 var TOTAL = 49;
 function SpotPlayer({
   frames,
+  size,
   gap = true,
   isPlaying = true,
   duration = 120,
   repeatCount = -1,
-  onComplete,
-  className,
-  style
+  onComplete
 }) {
   const gridRef = (0, import_react.useRef)(null);
   const currentIndex = (0, import_react.useRef)(0);
@@ -82,12 +120,8 @@ function SpotPlayer({
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [frames, isPlaying, applyFrame, duration, repeatCount, onComplete]);
-  const rootClass = [
-    "spot-player",
-    gap ? "spot-player--gap" : "",
-    className != null ? className : ""
-  ].filter(Boolean).join(" ");
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { ref: gridRef, className: rootClass, style, children: Array.from({ length: TOTAL }).map((_, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "spot-pixel" }, i)) });
+  const rootClass = ["spot-player", gap ? "spot-player--gap" : ""].filter(Boolean).join(" ");
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { ref: gridRef, className: rootClass, style: { width: size, height: size }, children: Array.from({ length: TOTAL }).map((_, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "spot-pixel" }, i)) });
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

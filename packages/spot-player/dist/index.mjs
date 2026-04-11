@@ -1,16 +1,54 @@
 // src/index.tsx
 import { useCallback, useEffect, useRef } from "react";
 import { jsx } from "react/jsx-runtime";
+var CSS = `
+.spot-player {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  aspect-ratio: 1 / 1;
+  gap: 0;
+  box-sizing: border-box;
+}
+.spot-player--gap {
+  gap: var(--spot-gap, 1px);
+}
+.spot-pixel {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--spot-off, #e4e4e4);
+  transition: background-color 75ms linear;
+}
+.spot-pixel--on {
+  background-color: var(--spot-on, #111111);
+}
+@media (prefers-color-scheme: dark) {
+  .spot-pixel { background-color: var(--spot-off, #2a2a2a); }
+  .spot-pixel--on { background-color: var(--spot-on, #f0f0f0); }
+}
+.dark .spot-pixel { background-color: var(--spot-off, #2a2a2a); }
+.dark .spot-pixel--on { background-color: var(--spot-on, #f0f0f0); }
+.light .spot-pixel { background-color: var(--spot-off, #e4e4e4); }
+.light .spot-pixel--on { background-color: var(--spot-on, #111111); }
+`;
+var STYLE_ID = "spot-player-styles";
+function injectStyle() {
+  if (typeof document === "undefined") return;
+  if (document.getElementById(STYLE_ID)) return;
+  const el = document.createElement("style");
+  el.id = STYLE_ID;
+  el.textContent = CSS;
+  document.head.appendChild(el);
+}
+injectStyle();
 var TOTAL = 49;
 function SpotPlayer({
   frames,
+  size,
   gap = true,
   isPlaying = true,
   duration = 120,
   repeatCount = -1,
-  onComplete,
-  className,
-  style
+  onComplete
 }) {
   const gridRef = useRef(null);
   const currentIndex = useRef(0);
@@ -58,12 +96,8 @@ function SpotPlayer({
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [frames, isPlaying, applyFrame, duration, repeatCount, onComplete]);
-  const rootClass = [
-    "spot-player",
-    gap ? "spot-player--gap" : "",
-    className != null ? className : ""
-  ].filter(Boolean).join(" ");
-  return /* @__PURE__ */ jsx("div", { ref: gridRef, className: rootClass, style, children: Array.from({ length: TOTAL }).map((_, i) => /* @__PURE__ */ jsx("div", { className: "spot-pixel" }, i)) });
+  const rootClass = ["spot-player", gap ? "spot-player--gap" : ""].filter(Boolean).join(" ");
+  return /* @__PURE__ */ jsx("div", { ref: gridRef, className: rootClass, style: { width: size, height: size }, children: Array.from({ length: TOTAL }).map((_, i) => /* @__PURE__ */ jsx("div", { className: "spot-pixel" }, i)) });
 }
 export {
   SpotPlayer

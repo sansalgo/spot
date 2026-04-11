@@ -5,6 +5,8 @@ type Frame = number[];
 interface SpotPlayerProps {
     /** Animation frames — each frame is an array of active pixel indices (0–48). */
     frames: Frame[];
+    /** Width and height of the player in pixels. */
+    size: number;
     /** Render a gap between pixels. Default: true. */
     gap?: boolean;
     /** Play the animation automatically. Default: true. */
@@ -15,20 +17,7 @@ interface SpotPlayerProps {
     repeatCount?: number;
     /** Called when repeatCount is reached. */
     onComplete?: () => void;
-    /**
-     * CSS class for sizing — e.g. set width/height here.
-     * The grid always fills its container and keeps a 1:1 aspect ratio.
-     *
-     * @example
-     * // Inline size
-     * <SpotPlayer frames={...} style={{ width: 64 }} />
-     *
-     * // Tailwind
-     * <SpotPlayer frames={...} className="w-16" />
-     */
-    className?: string;
-    style?: React.CSSProperties;
 }
-declare function SpotPlayer({ frames, gap, isPlaying, duration, repeatCount, onComplete, className, style, }: SpotPlayerProps): react_jsx_runtime.JSX.Element;
+declare function SpotPlayer({ frames, size, gap, isPlaying, duration, repeatCount, onComplete, }: SpotPlayerProps): react_jsx_runtime.JSX.Element;
 
 export { type Frame, SpotPlayer, type SpotPlayerProps };

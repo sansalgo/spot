@@ -1,8 +1,13 @@
 {
   "name": "@sansalgo/spot-player",
-  "version": "0.1.0",
-  "description": "A resizable 7×7 pixel animation player React component",
-  "keywords": ["pixel", "animation", "react", "component"],
+  "version": "0.3.0",
+  "description": "Pixel animation player for React — no canvas, no heavy runtime",
+  "keywords": [
+    "pixel",
+    "animation",
+    "react",
+    "component"
+  ],
   "license": "MIT",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -14,7 +19,9 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
