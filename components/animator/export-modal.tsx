@@ -21,6 +21,7 @@ function configToJsx(config: AnimationConfig): string {
 
   const lines = ["<SpotPlayer"];
   lines.push(`  frames={${framesLiteral}}`);
+  lines.push(`  size={168}`);
   if (config.grid.gap) lines.push(`  gap`);
   if (config.duration !== 120) lines.push(`  duration={${config.duration}}`);
   lines.push("/>");
