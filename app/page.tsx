@@ -52,11 +52,6 @@ export default function Home() {
       {/* ── Header ── */}
       <header className="h-12 px-4 border-b border-border flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="grid grid-cols-4 gap-0.5 w-5">
-            {[1,1,1,0, 1,0,1,1, 0,1,1,1, 1,1,0,0].map((v, i) => (
-              <div key={i} className={`w-1 h-1 rounded-[0.5px] ${v ? "bg-foreground" : "bg-muted"}`} />
-            ))}
-          </div>
           <span className="text-[13px] font-semibold tracking-[0.05em]">SPOT</span>
           <span className="text-[10px] text-muted-foreground tracking-widest hidden sm:block">
             PIXEL ANIMATOR
